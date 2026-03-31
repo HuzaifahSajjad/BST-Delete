@@ -65,13 +65,33 @@ public class BST<E extends Comparable<E>> implements Tree<E> {
     // ── Delete ───────────────────────────────────────────────────────────
     @Override
     public boolean delete(E e) {
-        // TODO: remove e from the tree
-        // handle all three cases: leaf, one child, two children
-        // return false if e is not found
-        // return true if deleted successfully
-        // remember to decrement size
-
-        return false; // replace this
+        TreeNode<E> parent = null;
+        TreeNode<E> current = root;
+        while (current != null) {
+            int cmp = e.compareTo(current.element);
+            if (cmp < 0) { parent = current; current = current.left; }
+            else if (cmp > 0) { parent = current; current = current.right; }
+            else { break; }
+        }
+        if (current == null) return false;
+        if (current.left == null || current.right == null) {
+            TreeNode<E> child;
+            if (current.left != null) { child = current.left; }
+            else { child = current.right; }
+            if (parent == null) { root = child; }
+            else if (parent.left == current) { parent.left = child; }
+            else { parent.right = child; }
+        }
+        else {
+            TreeNode<E> successorParent = current;
+            TreeNode<E> successor = current.right;
+            while (successor.left != null) { successorParent = successor; successor = successor.left; }
+            current.element = successor.element;
+            if (successorParent.left == successor) { successorParent.left = successor.right; }
+            else { successorParent.right = successor.right; }
+        }
+        size--;
+        return true;
     }
 
     // ── Traversals ───────────────────────────────────────────────────────
